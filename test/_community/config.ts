@@ -2,11 +2,13 @@ import { buildConfig } from '../buildConfig';
 import { PostsCollection, postsSlug } from './collections/Posts';
 import { MenuGlobal } from './globals/Menu';
 import { devUser } from '../credentials';
+import { PostCategoriesCollection, postCategoriesSlug } from './collections/PostCategories';
 
 export default buildConfig({
   // ...extend config here
   collections: [
     PostsCollection,
+    PostCategoriesCollection,
     // ...add more collections here
   ],
   globals: [
@@ -23,10 +25,18 @@ export default buildConfig({
       },
     });
 
+    const { id: categoryId } = await payload.create({
+      collection: postCategoriesSlug,
+      data: {
+        name: 'example category',
+      },
+    });
+
     await payload.create({
       collection: postsSlug,
       data: {
         text: 'example post',
+        category: categoryId,
       },
     });
   },
