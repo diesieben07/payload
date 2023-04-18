@@ -8,6 +8,7 @@
 export interface Config {
   collections: {
     posts: Post;
+    postCategories: PostCategory;
     users: User;
   };
   globals: {
@@ -17,6 +18,15 @@ export interface Config {
 export interface Post {
   id: string;
   text?: string;
+  category?: string | PostCategory;
+  _status?: 'draft' | 'published';
+  createdAt: string;
+  updatedAt: string;
+}
+export interface PostCategory {
+  id: string;
+  name?: string;
+  _status?: 'draft' | 'published';
   createdAt: string;
   updatedAt: string;
 }
