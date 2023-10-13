@@ -39,34 +39,15 @@ describe('_Community Tests', () => {
     }
   })
 
-  // --__--__--__--__--__--__--__--__--__
-  // You can run tests against the local API or the REST API
-  // use the tests below as a guide
-  // --__--__--__--__--__--__--__--__--__
-
-  it('local API example', async () => {
-    const newPost = await payload.create({
-      collection: postsSlug,
-      data: {
-        text: 'LOCAL API EXAMPLE',
-      },
-    })
-
-    expect(newPost.text).toEqual('LOCAL API EXAMPLE')
-  })
-
-  it('rest API example', async () => {
-    const newPost = await fetch(`${apiUrl}/${postsSlug}`, {
+  it('should not crash when trying to refresh an invalid token', async () => {
+    const res = await fetch(`${apiUrl}/users/refresh-token`, {
       method: 'POST',
       headers: {
         ...headers,
-        Authorization: `JWT ${jwt}`,
+        Authorization: `JWT invalid-hooey`,
       },
-      body: JSON.stringify({
-        text: 'REST API EXAMPLE',
-      }),
-    }).then((res) => res.json())
+    })
 
-    expect(newPost.doc.text).toEqual('REST API EXAMPLE')
+    expect(res.status).toEqual(403)
   })
 })
