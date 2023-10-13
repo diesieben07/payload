@@ -6,6 +6,7 @@ import { createHandler } from 'graphql-http/lib/use/express'
 import type { PayloadRequest } from '../express/types'
 
 import errorHandler from './errorHandler'
+import { initTransaction } from '../utilities/initTransaction'
 
 const graphQLHandler = (req: PayloadRequest, res: Response) => {
   const { payload } = req

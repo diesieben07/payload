@@ -5,6 +5,7 @@ import type { Connect } from 'payload/database'
 import mongoose from 'mongoose'
 
 import type { MongooseAdapter } from '.'
+import { MongoMemoryServer } from 'mongodb-memory-server'
 
 export const connect: Connect = async function connect(this: MongooseAdapter, payload) {
   if (this.url === false) {
@@ -29,17 +30,29 @@ export const connect: Connect = async function connect(this: MongooseAdapter, pa
       urlToConnect = process.env.PAYLOAD_TEST_MONGO_URL
     } else {
       connectionOptions.dbName = 'payloadmemory'
-      const { MongoMemoryServer } = require('mongodb-memory-server')
+      const { MongoMemoryReplSet, MongoMemoryServer } = require('mongodb-memory-server')
       const getPort = require('get-port')
 
       const port = await getPort()
-      this.mongoMemoryServer = await MongoMemoryServer.create({
-        instance: {
-          dbName: 'payloadmemory',
-          port,
-        },
-      })
-
+      if (process.env.PAYLOAD_TEST_MONGO_USE_REPL_SET) {
+        this.mongoMemoryServer = await MongoMemoryReplSet.create({
+          instanceOpts: [
+            {
+              port,
+            },
+          ],
+          replSet: {
+            dbName: 'payloadmemory',
+          },
+        })
+      } else {
+        this.mongoMemoryServer = await MongoMemoryServer.create({
+          instance: {
+            dbName: 'payloadmemory',
+            port,
+          },
+        })
+      }
       urlToConnect = this.mongoMemoryServer.getUri()
       successfulConnectionMessage = 'Connected to in-memory MongoDB server successfully!'
     }
