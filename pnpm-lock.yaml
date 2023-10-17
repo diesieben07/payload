@@ -355,11 +355,11 @@ importers:
         specifier: 2.11.2
         version: 2.11.2
       drizzle-kit:
-        specifier: 0.19.13
-        version: 0.19.13
+        specifier: 0.19.13-e99bac1
+        version: 0.19.13-e99bac1
       drizzle-orm:
         specifier: 0.28.5
-        version: 0.28.5(@libsql/client@0.3.4)(@types/pg@8.10.2)(pg@8.11.3)
+        version: 0.28.5(@libsql/client@0.3.4)(@types/pg@8.10.2)(better-sqlite3@8.6.0)(pg@8.11.3)
       pg:
         specifier: 8.11.3
         version: 8.11.3
@@ -7284,8 +7284,8 @@ packages:
       wordwrap: 1.0.0
     dev: false
 
-  /drizzle-kit@0.19.13:
-    resolution: {integrity: sha512-Rba5VW1O2JfJlwVBeZ8Zwt2E2us5oZ08PQBDiVSGlug53TOc8hzXjblZFuF+dnll9/RQEHrkzBmJFgqTvn5Rxg==}
+  /drizzle-kit@0.19.13-e99bac1:
+    resolution: {integrity: sha512-25Ahwm7CoaXCcrSuDjNqNH7vwrjt1s+I4O1yXVDBwYnyRe4RY8ZD57s5iA9PE5C+IJwBJtxBSXYWkat+efb3ug==}
     hasBin: true
     dependencies:
       '@drizzle-team/studio': 0.0.5
@@ -7304,7 +7304,7 @@ packages:
       - supports-color
     dev: false
 
-  /drizzle-orm@0.28.5(@libsql/client@0.3.4)(@types/pg@8.10.2)(pg@8.11.3):
+  /drizzle-orm@0.28.5(@libsql/client@0.3.4)(@types/pg@8.10.2)(better-sqlite3@8.6.0)(pg@8.11.3):
     resolution: {integrity: sha512-6r6Iw4c38NAmW6TiKH3TUpGUQ1YdlEoLJOQptn8XPx3Z63+vFNKfAiANqrIiYZiMjKR9+NYAL219nFrmo1duXA==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
@@ -7368,6 +7368,7 @@ packages:
     dependencies:
       '@libsql/client': 0.3.4
       '@types/pg': 8.10.2
+      better-sqlite3: 8.6.0
       pg: 8.11.3
     dev: false
 

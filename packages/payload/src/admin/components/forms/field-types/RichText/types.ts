@@ -20,6 +20,7 @@ export type RichTextAdapter<AdapterProps = object> = {
     req: PayloadRequest
     showHiddenFields: boolean
     siblingDoc: Record<string, unknown>
+    typeDepths?: Record<string, number>
   }) => Promise<void> | null
   validate: Validate<unknown, unknown, RichTextField<AdapterProps>>
 }

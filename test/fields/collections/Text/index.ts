@@ -8,6 +8,9 @@ const TextFields: CollectionConfig = {
   admin: {
     useAsTitle: 'text',
   },
+  access: {
+    read: () => true,
+  },
   fields: [
     {
       name: 'text',

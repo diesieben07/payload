@@ -7,6 +7,7 @@ import {
   GraphQLBoolean,
   GraphQLEnumType,
   GraphQLFloat,
+  GraphQLInputObjectType,
   GraphQLInt,
   GraphQLList,
   GraphQLNonNull,
@@ -416,34 +417,53 @@ function buildObjectType({
         [field.name]: relationship,
       }
     },
-    richText: (objectTypeConfig: ObjectTypeConfig, field: RichTextField) => ({
-      ...objectTypeConfig,
-      [field.name]: {
-        args: {
-          depth: {
+    richText: (objectTypeConfig: ObjectTypeConfig, field: RichTextField) => {
+      const typeDepthsInput = new GraphQLInputObjectType({
+        name: combineParentName(parentName, `${field.name}Depths`),
+        fields: {
+          link: {
+            type: GraphQLInt,
+          },
+          relationship: {
             type: GraphQLInt,
           },
         },
-        async resolve(parent, args, context) {
-          let depth = payload.config.defaultDepth
-          if (typeof args.depth !== 'undefined') depth = args.depth
-          const editor: RichTextAdapter = field?.editor
+      })
+      return {
+        ...objectTypeConfig,
+        [field.name]: {
+          args: {
+            depth: {
+              type: GraphQLInt,
+            },
+            depths: {
+              type: typeDepthsInput,
+            },
+          },
+          async resolve(parent, args, context) {
+            let depth = payload.config.defaultDepth
+            let typeDepths = undefined
+            if (typeof args.depth !== 'undefined') depth = args.depth
+            if (typeof args.depths === 'object' && args.depths !== null) typeDepths = args.depths
+            const editor: RichTextAdapter = field?.editor
 
-          if (editor?.afterReadPromise) {
-            await editor?.afterReadPromise({
-              depth,
-              field,
-              req: context.req,
-              showHiddenFields: false,
-              siblingDoc: parent,
-            })
-          }
+            if (editor?.afterReadPromise) {
+              await editor?.afterReadPromise({
+                depth,
+                field,
+                req: context.req,
+                showHiddenFields: false,
+                siblingDoc: parent,
+                typeDepths,
+              })
+            }
 
-          return parent[field.name]
+            return parent[field.name]
+          },
+          type: withNullableType(field, GraphQLJSON, forceNullable),
         },
-        type: withNullableType(field, GraphQLJSON, forceNullable),
-      },
-    }),
+      }
+    },
     row: (objectTypeConfig: ObjectTypeConfig, field: RowField) =>
       field.fields.reduce((objectTypeConfigWithRowFields, subField) => {
         const addSubField = fieldToSchemaMap[subField.type]

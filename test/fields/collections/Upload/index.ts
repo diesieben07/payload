@@ -7,6 +7,9 @@ const Uploads: CollectionConfig = {
   upload: {
     staticDir: path.resolve(__dirname, './uploads'),
   },
+  access: {
+    read: () => true,
+  },
   fields: [
     {
       type: 'text',

@@ -27,6 +27,7 @@ export function slateEditor(args: AdapterArguments): RichTextAdapter<AdapterArgu
       req,
       showHiddenFields,
       siblingDoc,
+      typeDepths,
     }) {
       if (
         field.admin?.elements?.includes('relationship') ||
@@ -42,6 +43,7 @@ export function slateEditor(args: AdapterArguments): RichTextAdapter<AdapterArgu
           req,
           showHiddenFields,
           siblingDoc,
+          typeDepths,
         })
       }
       return null
