@@ -3,6 +3,7 @@ import type { GlobalConfig } from '../../../../packages/payload/src/globals/conf
 export const menuSlug = 'menu'
 
 export const MenuGlobal: GlobalConfig = {
+  graphQL: false,
   slug: menuSlug,
   fields: [
     {
