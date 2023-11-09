@@ -1,0 +1,26 @@
+version: '3.8'
+
+name: "payload-relationship-test"
+services:
+  mongo1:
+    image: mongo:latest
+    command: --replSet payload --bind_ip_all
+    volumes:
+      - data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - payload
+  mongoRsInit:
+    depends_on: [mongo1]
+    image: mongo:latest
+    restart: no
+    entrypoint: ["/scripts/rs-init.sh"]
+    volumes:
+      - ./rs-init.sh:/scripts/rs-init.sh
+    networks:
+      - payload
+volumes:
+  data:
+networks:
+  payload:

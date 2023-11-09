@@ -1,3 +1,5 @@
+import type { PayloadRequest } from '../../packages/payload/src/express/types'
+
 import payload from '../../packages/payload/src'
 import { devUser } from '../credentials'
 import { initPayloadTest } from '../helpers/configHelpers'
@@ -17,7 +19,10 @@ describe('_Community Tests', () => {
   // Boilerplate test setup/teardown
   // --__--__--__--__--__--__--__--__--__
   beforeAll(async () => {
-    const { serverURL } = await initPayloadTest({ __dirname, init: { local: false } })
+    const { serverURL } = await initPayloadTest({
+      __dirname,
+      init: { local: false, mongoURL: process.env.MONGODB_URL || undefined },
+    })
     apiUrl = `${serverURL}/api`
 
     const response = await fetch(`${apiUrl}/users/login`, {
@@ -45,28 +50,29 @@ describe('_Community Tests', () => {
   // --__--__--__--__--__--__--__--__--__
 
   it('local API example', async () => {
-    const newPost = await payload.create({
+    const req = {} as PayloadRequest
+    req.transactionID = await payload.db.beginTransaction?.()
+    expect(req.transactionID).toBeTruthy()
+    const parentPost = await payload.create({
+      req,
       collection: postsSlug,
       data: {
-        text: 'LOCAL API EXAMPLE',
+        text: 'ParentPost',
+      },
+    })
+    const childPost = await payload.create({
+      req,
+      collection: postsSlug,
+      data: {
+        text: 'ParentPost',
+        parentPost: parentPost.id,
       },
     })
 
-    expect(newPost.text).toEqual('LOCAL API EXAMPLE')
-  })
+    if (req.transactionID) {
+      await payload.db.commitTransaction?.(req.transactionID)
+    }
 
-  it('rest API example', async () => {
-    const newPost = await fetch(`${apiUrl}/${postsSlug}`, {
-      method: 'POST',
-      headers: {
-        ...headers,
-        Authorization: `JWT ${jwt}`,
-      },
-      body: JSON.stringify({
-        text: 'REST API EXAMPLE',
-      }),
-    }).then((res) => res.json())
-
-    expect(newPost.doc.text).toEqual('REST API EXAMPLE')
+    expect(childPost.parentPost.id).toEqual(parentPost.id)
   })
 })

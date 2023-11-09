@@ -1,7 +1,7 @@
 import { buildConfigWithDefaults } from '../buildConfigWithDefaults'
 import { devUser } from '../credentials'
 import { MediaCollection } from './collections/Media'
-import { PostsCollection, postsSlug } from './collections/Posts'
+import { PostsCollection } from './collections/Posts'
 import { MenuGlobal } from './globals/Menu'
 
 export default buildConfigWithDefaults({
@@ -25,13 +25,6 @@ export default buildConfigWithDefaults({
       data: {
         email: devUser.email,
         password: devUser.password,
-      },
-    })
-
-    await payload.create({
-      collection: postsSlug,
-      data: {
-        text: 'example post',
       },
     })
   },
