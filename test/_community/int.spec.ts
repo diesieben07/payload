@@ -44,29 +44,22 @@ describe('_Community Tests', () => {
   // use the tests below as a guide
   // --__--__--__--__--__--__--__--__--__
 
-  it('local API example', async () => {
-    const newPost = await payload.create({
-      collection: postsSlug,
-      data: {
-        text: 'LOCAL API EXAMPLE',
-      },
-    })
-
-    expect(newPost.text).toEqual('LOCAL API EXAMPLE')
-  })
-
-  it('rest API example', async () => {
-    const newPost = await fetch(`${apiUrl}/${postsSlug}`, {
+  it('has request headers available in graphQL', async () => {
+    const jsonResponse = await fetch(`${apiUrl}/graphql`, {
       method: 'POST',
       headers: {
         ...headers,
         Authorization: `JWT ${jwt}`,
       },
       body: JSON.stringify({
-        text: 'REST API EXAMPLE',
+        query: `query posts {
+          Posts { docs { text } }
+        }`,
       }),
     }).then((res) => res.json())
 
-    expect(newPost.doc.text).toEqual('REST API EXAMPLE')
+    console.log('jsonResponse', jsonResponse)
+    expect(jsonResponse.data.Posts.docs.length).toEqual(1)
+    expect(jsonResponse.data.Posts.docs[0].text).toEqual('application/json')
   })
 })

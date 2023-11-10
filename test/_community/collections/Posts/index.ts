@@ -10,6 +10,13 @@ export const PostsCollection: CollectionConfig = {
     {
       name: 'text',
       type: 'text',
+      hooks: {
+        afterRead: [
+          ({ req }) => {
+            return req.headers?.['content-type'] || 'headers unknown'
+          },
+        ],
+      },
     },
     {
       name: 'associatedMedia',
